@@ -41,7 +41,6 @@ import {
 } from '../configuration/utils/tenant-utils';
 import { fetchAccountInfo } from './utils';
 import { constructErrorMessageAndLog } from '../error-utils';
-import { getSavedTenant, setSavedTenant } from '../../utils/storage-utils';
 
 interface TenantSwitchPanelProps {
   coreStart: CoreStart;
@@ -209,8 +208,7 @@ export function TenantSwitchPanel(props: TenantSwitchPanelProps) {
       setErrorCallOut('No target tenant is specified!');
     } else {
       try {
-        setSavedTenant(tenantName);
-
+        // set the tenant name in backend
         await changeTenant(tenantName);
         props.handleSwitchAndClose();
       } catch (e) {
