@@ -61,10 +61,6 @@ export function setupMultitenantRoutes(
     }
   );
 
-  const getTenant = async () => {
-    await fetchCurrentTenant(props.coreStart.http);
-  };
-
   /**
    * Gets current selected tenant from session.
    */
@@ -74,7 +70,8 @@ export function setupMultitenantRoutes(
       validate: false,
     },
     async (context, request, response) => {
-      let tenant; // parse tenant from getTenant() response
+      let tenant = await fetchCurrentTenant(props.coreStart.http)
+      // parse tenant from getTenant() response
       return response.ok({
         body: entities.encode(tenant)
       });
