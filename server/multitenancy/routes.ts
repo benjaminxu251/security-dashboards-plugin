@@ -22,7 +22,7 @@ import { fetchCurrentTenant } from '../../public/apps/configuration/utils/tenant
 
 export function setupMultitenantRoutes(
   router: IRouter,
-  sessionStroageFactory: SessionStorageFactory<SecuritySessionCookie>,
+  sessionStorageFactory: SessionStorageFactory<SecuritySessionCookie>,
   securityClient: SecurityClient
 ) {
   const PREFIX: string = '/api/v1';
@@ -45,7 +45,7 @@ export function setupMultitenantRoutes(
     async (context, request, response) => {
       const tenant = request.body.tenant;
 
-      const cookie: SecuritySessionCookie | null = await sessionStroageFactory
+      const cookie: SecuritySessionCookie | null = await sessionStorageFactory
         .asScoped(request)
         .get();
       if (!cookie) {
@@ -54,7 +54,7 @@ export function setupMultitenantRoutes(
         });
       }
       cookie.tenant = tenant;
-      sessionStroageFactory.asScoped(request).set(cookie);
+      sessionStorageFactory.asScoped(request).set(cookie);
       return response.ok({
         body: entities.encode(tenant),
       });
