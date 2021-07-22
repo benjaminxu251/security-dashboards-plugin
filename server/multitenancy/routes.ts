@@ -18,6 +18,7 @@ import { AllHtmlEntities } from 'html-entities';
 import { IRouter, SessionStorageFactory } from '../../../../src/core/server';
 import { SecuritySessionCookie } from '../session/security_cookie';
 import { SecurityClient } from '../backend/opensearch_security_client';
+import { fetchCurrentTenant } from '../../public/apps/configuration/utils/tenant-utils'
 
 export function setupMultitenantRoutes(
   router: IRouter,
@@ -60,6 +61,10 @@ export function setupMultitenantRoutes(
     }
   );
 
+  const getTenant = async () => {
+    await fetchCurrentTenant(props.coreStart.http);
+  };
+
   /**
    * Gets current selected tenant from session.
    */
@@ -69,14 +74,9 @@ export function setupMultitenantRoutes(
       validate: false,
     },
     async (context, request, response) => {
-      const cookie = await sessionStroageFactory.asScoped(request).get();
-      if (!cookie) {
-        return response.badRequest({
-          body: 'Invalid cookie.',
-        });
-      }
+      let tenant; // parse tenant from getTenant() response
       return response.ok({
-        body: entities.encode(cookie.tenant),
+        body: entities.encode(tenant)
       });
     }
   );
