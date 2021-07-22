@@ -17,6 +17,7 @@ import { isEmpty, findKey, cloneDeep } from 'lodash';
 import { OpenSearchDashboardsRequest } from '../../../../src/core/server';
 import { SecuritySessionCookie } from '../session/security_cookie';
 import { SecurityPluginConfigType } from '..';
+import { fetchCurrentTenant } from './../../public/apps/configuration/utils/tenant-utils';
 
 const PRIVATE_TENANT_SYMBOL: string = '__user__';
 const GLOBAL_TENANT_SYMBOL: string = '';
@@ -48,11 +49,8 @@ export function resolveTenant(
     selectedTenant = request.headers.securitytenant
       ? (request.headers.securitytenant as string)
       : (request.headers.security_tenant as string);
-  } /* else if (isValidTenant(cookie.tenant)) {
-    selectedTenant = cookie.tenant;
-  } */ else {
-    // should be checking API here before giving up and setting to undefined
-    selectedTenant = undefined;
+  } else {
+    selectedTenant = fetchCurrentTenant(props.coreStart.http);
   }
 
   const preferredTenants = config.multitenancy?.tenants.preferred;
