@@ -50,7 +50,7 @@ export function resolveTenant(
       ? (request.headers.securitytenant as string)
       : (request.headers.security_tenant as string);
   } else {
-    selectedTenant = fetchCurrentTenant(props.coreStart.http);
+    Promise.resolve(fetchCurrentTenant(props.coreStart.http)).then(function(v) {selectedTenant = v});
   }
 
   const preferredTenants = config.multitenancy?.tenants.preferred;
