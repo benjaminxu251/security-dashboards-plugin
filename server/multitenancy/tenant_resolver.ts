@@ -49,9 +49,10 @@ export function resolveTenant(
     selectedTenant = request.headers.securitytenant
       ? (request.headers.securitytenant as string)
       : (request.headers.security_tenant as string);
-  } else if (isValidTenant(cookie.tenant)) {
+  } /* else if (isValidTenant(cookie.tenant)) {
     selectedTenant = cookie.tenant;
-  } else {
+  } */ else {
+    // should be checking API here before giving up and setting to undefined
     selectedTenant = undefined;
   }
 
