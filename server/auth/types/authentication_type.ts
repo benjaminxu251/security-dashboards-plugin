@@ -149,7 +149,7 @@ export abstract class AuthenticationType implements IAuthenticationType {
     // resolve tenant if necessary
     if (this.config.multitenancy?.enabled && isMultitenantPath(request)) {
       try {
-        const tenant = await this.resolveTenant(request, cookie!, authHeaders, authInfo);
+        const tenant = await this.resolveTenant(request, authHeaders, authInfo);
         // return 401 if no tenant available
         if (!isValidTenant(tenant)) {
           return response.badRequest({
@@ -159,12 +159,6 @@ export abstract class AuthenticationType implements IAuthenticationType {
         }
         // set tenant in header
         Object.assign(authHeaders, { securitytenant: tenant });
-
-        // set tenant to cookie
-        if (tenant !== cookie!.tenant) {
-          cookie!.tenant = tenant;
-          this.sessionStorageFactory.asScoped(request).set(cookie!);
-        }
       } catch (error) {
         this.logger.error(`Failed to resolve user tenant: ${error}`);
         if (error instanceof UnauthenticatedError) {
@@ -202,7 +196,6 @@ export abstract class AuthenticationType implements IAuthenticationType {
 
   async resolveTenant(
     request: OpenSearchDashboardsRequest,
-    cookie: SecuritySessionCookie,
     authHeader: any,
     authInfo: any
   ): Promise<string | undefined> {
@@ -219,7 +212,6 @@ export abstract class AuthenticationType implements IAuthenticationType {
       authInfo.user_name,
       authInfo.tenants,
       this.config,
-      cookie
     );
     return selectedTenant;
   }

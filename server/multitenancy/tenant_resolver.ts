@@ -39,7 +39,6 @@ export function resolveTenant(
   username: string,
   availabeTenants: any,
   config: SecurityPluginConfigType,
-  cookie: SecuritySessionCookie
 ): string | undefined {
   let selectedTenant: string | undefined;
   const query: any = request.url.query as any;
