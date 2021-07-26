@@ -73,7 +73,6 @@ export function setupMultitenantRoutes(
     },
     async (context, request, response) => {
       let tenant = await fetchCurrentTenant(http)
-      // parse tenant from getTenant() response
       return response.ok({
         body: entities.encode(tenant)
       });
