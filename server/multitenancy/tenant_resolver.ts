@@ -15,9 +15,9 @@
 
 import { isEmpty, findKey, cloneDeep } from 'lodash';
 import { OpenSearchDashboardsRequest } from '../../../../src/core/server';
-import { SecuritySessionCookie } from '../session/security_cookie';
 import { SecurityPluginConfigType } from '..';
 import { fetchCurrentTenant } from './../../public/apps/configuration/utils/tenant-utils';
+import { HttpService } from '../../../../src/core/public/http/http_service';
 
 const PRIVATE_TENANT_SYMBOL: string = '__user__';
 const GLOBAL_TENANT_SYMBOL: string = '';
@@ -41,6 +41,7 @@ export function resolveTenant(
   availabeTenants: any,
   config: SecurityPluginConfigType,
 ): string | undefined {
+  const http = HttpService;
   let selectedTenant: string | undefined;
   const query: any = request.url.query as any;
   if (query && (query.security_tenant || query.securitytenant)) {
@@ -50,7 +51,7 @@ export function resolveTenant(
       ? (request.headers.securitytenant as string)
       : (request.headers.security_tenant as string);
   } else {
-    Promise.resolve(fetchCurrentTenant(props.coreStart.http)).then(function(v) {selectedTenant = v});
+    Promise.resolve(fetchCurrentTenant(http)).then(function(v) {selectedTenant = v});
   }
 
   const preferredTenants = config.multitenancy?.tenants.preferred;

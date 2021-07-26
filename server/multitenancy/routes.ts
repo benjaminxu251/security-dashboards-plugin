@@ -18,7 +18,8 @@ import { AllHtmlEntities } from 'html-entities';
 import { IRouter, SessionStorageFactory } from '../../../../src/core/server';
 import { SecuritySessionCookie } from '../session/security_cookie';
 import { SecurityClient } from '../backend/opensearch_security_client';
-import { fetchCurrentTenant } from '../../public/apps/configuration/utils/tenant-utils'
+import { fetchCurrentTenant } from '../../public/apps/configuration/utils/tenant-utils';
+import { HttpService } from '../../../../src/core/public/http/http_service';
 
 export function setupMultitenantRoutes(
   router: IRouter,
@@ -29,6 +30,7 @@ export function setupMultitenantRoutes(
 
   const entities = new AllHtmlEntities();
 
+  const http = HttpService;
   /**
    * Updates selected tenant.
    */
@@ -70,7 +72,7 @@ export function setupMultitenantRoutes(
       validate: false,
     },
     async (context, request, response) => {
-      let tenant = await fetchCurrentTenant(props.coreStart.http)
+      let tenant = await fetchCurrentTenant(http)
       // parse tenant from getTenant() response
       return response.ok({
         body: entities.encode(tenant)
