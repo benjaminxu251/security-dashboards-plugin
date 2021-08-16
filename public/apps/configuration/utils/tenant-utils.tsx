@@ -105,7 +105,7 @@ export const RESOLVED_GLOBAL_TENANT = 'Global';
 export const RESOLVED_PRIVATE_TENANT = 'Private';
 
 export function resolveTenantName(tenant: string, userName: string) {
-  if (!tenant || tenant === 'undefined') {
+  if (!tenant || tenant === 'undefined' || tenant === 'global') {
     return RESOLVED_GLOBAL_TENANT;
   }
   if (tenant === userName || tenant === '__user__') {
